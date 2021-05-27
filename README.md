@@ -11,4 +11,4 @@ cd gu-a-tor-proxychains
 
 ls
 
-cat guía.txt
+cat Guía.txt

@@ -1,1 +1,230 @@
 
+Usar ProxyChains con Tor para Navegar de forma anónima
+  Seguridad   Usar Proxychains con Tor Para Navegar de Forma Anonima
+
+ 
+Usar ProxyChains con Tor para Navegar de forma anónima 
+
+
+Navegar de forma anónima con Tor y ProxyChains en cualquier distribución linux.
+
+En este tutorial os vamos a enseñar cómo instalar, configurar y utilizar Proxychains y Tor de manera a que nuestra privacidad esté siempre garantizada y podamos que, aunque el servidor nos identifique, poder cambiar nuestra identidad fácilmente pudiendo seguir manteniendo al máximo nuestro anonimato.
+
+Hoy en día la privacidad es fundamental, y en muchas ocasiones nos vemos obligados a usar la red Tor. Es evidente que nada es infalible, así que nosotros vamos a navegar por Internet agregando a Tor, la herramienta ProxyChains.
+
+¿Qué es ProxyChains?
+
+ProxyChains es una herramienta con la capacidad de conectarse a varios proxy a través de los protocolos HTTP(S), SOCKS4 y SOCKS5. Al usar la aplicación con Tor se dificulta enormemente la detección de nuestra ip real. Sus características principales, son:
+
+Permite encadenar diferentes proxies a la vez HTTP/S- SOCKS4 – SOCKS5.
+Puedes elegir la forma de encadenar los proxy: aleatorio (random), estricto (strict), dinámico (dynamic), round Robind.
+Tiene la capacidad de resolver las DNS (UDP) a través del proxy.
+Posibilidad de integrar el número de proxies encadenados que necesites (los que estén caídos se los salta).
+Proxychains trabaja con cualquier aplicación de cliente TCP, por ejemplo, nmap, telnet, etc.
+Admite casi todos los tipos de servidores, como: like squid, sendmail, etc.
+Las funciones de ProxyChain son variadas, puedes escanear de red, conectar por telnet o ssh para tareas oscuras, o simplemente puedes navegar por internet con tu navegador favorito. Nosotros no vamos a fomentar el black hack, así que en este articulo te voy a enseñar como navegar por la web con tu privacidad asegurada (o casi…).
+
+Navegar de forma anónima con Tor y ProxyChains
+
+Lo primero que debemos hacer es instalar Tor y ProxyChains. Las dos aplicaciones vienen de forma predeterminada en los repositorios casi todas las distribuciones linux.
+
+Instalar Tor y ProxyChains en Debian, Ubuntu, Linux Mint, y derivados
+
+sudo apt install tor proxychains
+Instalar Tor y ProxyChains en CentOS, RHEL, Fedora, y derivados
+
+yum install epel-release
+yum install tor proxychains
+
+------------------------
+
+dnf install epel-release
+dnf install tor proxychains
+Instalar Tor y ProxyChains en Arch Linux, Manjaro, y derivados
+
+pacman -S tor proxychains
+Instalar Tor y ProxyChains en OpenSuse
+
+zypper install tor proxychains
+Instalar Tor y ProxyChains en Gentoo
+
+emerge tor proxychains
+Instalar Tor y ProxyChains en FreeBSD
+
+pkg install tor proxychains
+No te olvides de iniciar Tor.
+
+service tor start
+Configurar ProxyChains
+
+Una vez instaladas las herramientas necesitamos configurar ProxyChains, y para ello vamos a editar el archivo «proxychains.conf».
+
+sudo nano /etc/proxychains.conf
+Modo de encadenar los proxy
+
+Ejecuta la acción que te indico en las flechas del archivo de configuración.
+
+# proxychains.conf  VER 3.1
+#
+#        HTTP, SOCKS4, SOCKS5 tunneling proxifier with DNS.
+#
+
+# The option below identifies how the ProxyList is treated.
+# only one option should be uncommented at time,
+# otherwise the last appearing option will be accepted
+#
+#dynamic_chain  <<<---descomentar
+#
+# Dynamic - Each connection will be done via chained proxies
+# all proxies chained in the order as they appear in the list
+# at least one proxy must be online to play in chain
+# (dead proxies are skipped)
+# otherwise EINTR is returned to the app
+#
+strict_chain   <<<---comentar
+#
+# Strict - Each connection will be done via chained proxies
+# all proxies chained in the order as they appear in the list
+# all proxies must be online to play in chain
+# otherwise EINTR is returned to the app
+Debe quedar así…
+
+# proxychains.conf  VER 3.1
+#
+#        HTTP, SOCKS4, SOCKS5 tunneling proxifier with DNS.
+#
+
+# The option below identifies how the ProxyList is treated.
+# only one option should be uncommented at time,
+# otherwise the last appearing option will be accepted
+#
+dynamic_chain
+#
+# Dynamic - Each connection will be done via chained proxies
+# all proxies chained in the order as they appear in the list
+# at least one proxy must be online to play in chain
+# (dead proxies are skipped)
+# otherwise EINTR is returned to the app
+#
+#strict_chain
+#
+# Strict - Each connection will be done via chained proxies
+# all proxies chained in the order as they appear in the list
+# all proxies must be online to play in chain
+# otherwise EINTR is returned to the app
+Guarda los cambios pero NO CIERRES EL ARCHIVO, aun no hemos terminado.
+
+Buscar ip de proxy gratuitos
+
+Existen muchos sitios donde podemos encontrar las ip de proxy (gratuitas), pero sin dudarlo uno de los mejores es:
+
+https://hidemy.name/es/proxy-list/
+
+Puedes definir las opciones del proxy, pero si es solo para navegar por la web puedes seguir mis recomendaciones.
+
+Selecciona tu país preferido.
+Tipos de Proxy.
+Apunta las cinco primeras ip que aparecen (como mínimo), suelen ser las más rápidas (puede variar dependiendo de la hora o el día).
+Buscar las ip proxy
+Buscar ip de proxy gratis
+
+Agregar las ip proxy a ProxyChains
+
+Bien… ahora continuamos con el archivo «proxychains.conf» que teníamos abierto. Al final del archivo vemos algo parecido a…
+
+#       proxy types: http, socks4, socks5
+#        ( auth types supported: "basic"-http  "user/pass"-socks )
+#
+[ProxyList]
+# add proxy here ...
+# meanwile
+# defaults set to "tor"
+socks4  127.0.0.1 9050
+NO borres ni comentes el socks4 que tenemos habilitado, simplemente agrega debajo (linea por linea) las ip de los proxy elegidos.
+
+Por ejemplo:
+
+#       proxy types: http, socks4, socks5
+#        ( auth types supported: "basic"-http  "user/pass"-socks )
+#
+[ProxyList]
+# add proxy here ...
+# meanwile
+# defaults set to "tor"
+socks4  127.0.0.1 9050
+https 109.167.38.1
+https 2.137.25.193
+https 137.101.138.173
+https 79.156.102.136
+https 88.2.24.50
+Guardamos el archivo y cerramos el editor.
+
+Necesitamos reiniciar Tor.
+
+service tor restart
+Navegar por internet con ProxyChains
+
+La conexión a ProxyChains la establecemos desde la consola / terminal, pero ojo… sin ser root, como tu usuario normal.
+
+La sintaxis es la siguiente:
+
+proxychains <aplicacion> <argumento-o-url>
+En nuestro ejemplo nos conectamos a «Google.com» con el navegador Firefox.
+
+proxychains firefox www.google.com
+No cierres la terminal, si lo haces se cortara la conexión.
+
+Veras algo similar a…
+
+holyguard@manoweb ~ $ proxychains firefox www.google.com
+ProxyChains-3.1 (http://proxychains.sf.net)
+(firefox:21320): Gtk-WARNING **: Theme directory of theme oxygen has no size field
+|DNS-request| detectportal.firefox.com
+|DNS-request| www.google.com
+|S-chain| -<>-127.0.0.1:9050-<><>-4.2.2.2:53-|S-chain| -<>-127.0.0.1:9050-<><>-4.2.2.2:53-<><>-0K
+<><>-OK
+|DNS- response] www.google.com is 216.58.212.4
+|S-chain| -<>-127.0.0.1:9050-<><>-216.58.212.4:443-|DNS-response| detectportal.firefox.com is 2.21.77.145
+<><>-OK
+|S-chain| -<>-127.0.0.1:9050-<><>-2.21.77.145:80-|DNS-request| content-signature-2.cdn.mozilla.net
+<><>-OK
+|S-chain| -<>-127.0.0.1:9050-<><>-4.2.2.2:53-|DNS-request| ocsp.pki.goog
+<><>-OK
+|S-chain| -<>-127.0.0.1:9050-<><>-4.2.2.2:53-<><>-OK
+|DNS-response| content-signature-2.cdn.mozilla.net is 13.35.253.70
+|S-chain| -<>-127.0.0.1:9050-<><>-13.35.253.70:443-|DNS-response| ocsp.pki.goog is 172.217.17.195
+<><>-OK
+|S-chain| -<>-127.0.0.1:9050-<><>-172.217.17.195:80-|DNS-request| mozilla.org
+|DNS-request| mozilla.org
+<><>-OK
+|DNS-request| detectportal.firefox.com
+|S-chain| -<>-127.0.0.1:9050-<><>-2.21.77.145:80- |S-chain| -<>-127.0.0.1:9050-<><>-4.2.2.2:53-|S-chain| -<>-127.0.0.1:9050-<><>-4.2.2.2:53-|S-chain| -<>-127.0.0.1:9050-<><>-4.2.2.2:53-|DNS-request| search.services.mozilla.com
+|S-chain| -<>-127.0.0.1:9050-<><>-4.2.2.2:53-<><>-OK
+<><>-OK
+<><>-OK
+<><>-OK
+<><>-OK
+|DNS-response| detectportal.firefox.com is 2.21.77.210
+|DNS-response| mozilla.org is 63.245.208.195
+|DNS-response| mozilla.org is 63.245.208.195
+|DNS-request| mozilla.org
+|S-chain| -<>-127.0.0.1:9050-<><>-4.2.2.2:53-|DNS-response| search.services.mozilla.com is 34.212.103.110
+|S-chain| -<>-127.0.0.1:9050-<><>-34.212.103.110:443-<><>-0K
+|DNS-response| mozilla.org is 63.245.208.195
+<><>-OK
+|DNS-request| ocsp.digicert.com
+|S-chain| -<>-127.0.0.1:9050-<><>-4.2.2.2:53-|DNS-request| firefox.settings.services.mozilla.com
+|S-chain| -<>-127.0.0.1:9050-<><>-4.2.2.2:53-<><>-0K
+|DNS-request| ssl.gstatic.com
+<><>-OK
+|DNS-request| lh3.googleusercontent.com 7
+|DNS-request| id.google.com 
+|DNS-response| ocsp.digicert.com is 93.184.220.29
+|S-chain| -<>-127.0.0.1:9050-<><>-93.184.220.29:80-|S-chain| -<>-127.0.0.1:9050-<><>-4.2.2.2:53-|DNS-response| firefox.settings.services.mozilla.com
+Navegar por internet con ProxyChains
+
+Automáticamente se abrirá el navegador firefox a través de Tor y de ProxyChains.
+
+Si quieres desinstalar Tor y ProxyChains debes hacerlo de la forma habitual, por ejemplo:
+
+sudo apt remove --purge tor proxychains
